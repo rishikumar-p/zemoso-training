@@ -1,0 +1,52 @@
+
+-- 1. Find out the PG-13 rated comedy movies. DO NOT use the film_list table.
+SELECT title
+FROM film INNER JOIN film_category AS fc
+ON film.film_id = fc.film_id
+WHERE rating = "PG-13" AND ( film.film_id IN (
+	    SELECT film_id
+     	FROM film_category AS fc INNER JOIN category
+    	ON fc.category_id = category.category_id
+    	WHERE category.name = "Comedy")
+);
+
+-- 2. Find out the top 3 rented horror movies.
+SELECT title
+From film INNER JOIN film_category as fc
+ON film.film_id = fc.film_id
+
+
+-- 3. Find out the list of customers from India who have rented sports movies.
+select distinct customer.customer_id,concat(customer.first_name,concat(" ",customer.last_name)) As "CUSTOMER_NAME"
+ from  film inner join
+     film_category on film.film_id=film_category.film_id inner join
+     category on category.category_id = film_category.category_id inner join
+     inventory on inventory.film_id=film.film_id) inner join
+     rental on rental.inventory_id=inventory.inventory_id inner join
+     customer on rental.customer_id=customer.customer_id inner join
+     address on address.address_id=customer.address_id inner join
+     city on city.city_id=address.city_id) inner join
+     country on country.country_id=city.country_id
+ where country.country="India" and category.name="Sports";
+
+-- 4. Find out the list of customers from Canada who have rented “NICK WAHLBERG” movies.
+select distinct customer.customer_id,concat(customer.first_name,concat(" ",customer.last_name)) As "CUSTOMER_NAME"
+ from film inner join
+     film_actor on film.film_id=film_actor.film_id inner join
+     actor on actor.actor_id = film_actor.actor_id inner join
+     inventory on inventory.film_id=film.film_id inner join
+     rental on rental.inventory_id=inventory.inventory_id inner join
+     customer on rental.customer_id=customer.customer_id inner join
+     address on address.address_id=customer.address_id inner join
+     city on city.city_id=address.city_id inner join
+     country on country.country_id=city.country_id
+ where country.country="Canada" and actor.first_name="NICK" and actor.last_name="WAHLBERG" order by CUSTOMER_NAME;
+
+-- 5. Find out the number of movies in which “SEAN WILLIAMS” acted.
+SELECT count(*) as "COUNT"
+FROM film_actor
+WHERE actor_id = (
+	SELECT actor_id
+    FROM actor
+    WHERE first_name = "SEAN" AND last_name = "WILLIAMS"
+);
